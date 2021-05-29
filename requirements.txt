@@ -1,3 +1,5 @@
+textblob
+matplotlib
 fastapi
 nest-asyncio
 pyngrok
