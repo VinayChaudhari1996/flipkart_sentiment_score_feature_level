@@ -12,6 +12,7 @@ from matplotlib.ticker import StrMethodFormatter
 import texthero as hero
 
 import nltk
+nltk.download('vader_lexicon')
 nltk.download('punkt')
 
 from nltk.tokenize import word_tokenize, RegexpTokenizer
@@ -19,7 +20,6 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import json 
 
 import collections
-import numpy as np
 from tqdm.notebook import tqdm
 
 
@@ -33,8 +33,6 @@ import uvicorn
 import os 
 
 
-import nltk
-nltk.download('vader_lexicon')
 print("All packages imported !!!")
 
 
