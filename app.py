@@ -153,9 +153,9 @@ async def takeQue(payload: processReviews):
 
 # DRIVER CODE
 
-if __name__ == "__main__":
-	print("STARTING API...")
-	uvicorn.run(app, host="0.0.0.0",port=8000)
+# if __name__ == "__main__":
+# 	print("STARTING API...")
+# 	uvicorn.run(app, host="0.0.0.0",port=8000)
 
 
 ############################################################################################
