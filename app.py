@@ -12,7 +12,7 @@ from matplotlib.ticker import StrMethodFormatter
 import texthero as hero
 
 import nltk
-nltk.download('punkt')
+#nltk.download('punkt')
 
 from nltk.tokenize import word_tokenize, RegexpTokenizer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -34,7 +34,7 @@ import os
 
 
 import nltk
-nltk.download('vader_lexicon')
+#nltk.download('vader_lexicon')
 print("All packages imported !!!")
 
 
