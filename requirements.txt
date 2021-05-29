@@ -6,6 +6,5 @@ pandas
 numpy
 nltk
 vaderSentiment
-zipfile38
 texthero
 tqdm
