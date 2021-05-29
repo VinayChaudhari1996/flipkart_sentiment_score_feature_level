@@ -8,5 +8,5 @@ pandas
 numpy
 nltk
 vaderSentiment
-texthero
+texthero==1.0.5
 tqdm
