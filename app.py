@@ -20,7 +20,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import json 
 
 import collections
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 
 
 from typing import Optional
