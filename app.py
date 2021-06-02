@@ -32,11 +32,19 @@ import nest_asyncio
 import uvicorn
 import os 
 
+#=====================================================#
+
+API_KEY = "NEURALPOCKET786#%*@"
+
+#=====================================================#
+
+
 
 print("All packages imported !!!")
 
 
 class processReviews(BaseModel):
+    api_key: str
     json_input_data: dict
     features:list
 
@@ -53,99 +61,106 @@ async def takeQue(payload: processReviews):
   # Where processed csv will store
   json_input_data = payload_dict['json_input_data']
   features = payload_dict['features']
+  api_key = payload_dict['api_key']
+
+  if API_KEY == str(api_key):
+        
+      print("[payload_dict] :",payload_dict)
 
 
-  print("[payload_dict] :",payload_dict)
+      # Beacuse list is in string '[]'  
+      #features = ast.literal_eval(features)
 
+      print("[json_input_data] :",type(json_input_data))
 
-  # Beacuse list is in string '[]'  
-  #features = ast.literal_eval(features)
-  
-  print("[json_input_data] :",type(json_input_data))
-
-  print("[features] :",features,type(features))
-
-
-
-
-  print("\n PROCESSING DATA")
-  print("-"*150)
+      print("[features] :",features,type(features))
 
 
 
 
-  reviewsRaw = pd.DataFrame.from_dict(json_input_data)
-
-  print("[Shape] : ",reviewsRaw.shape)
-
-  reviewsRaw = reviewsRaw.dropna()
-  Shape_of_data = reviewsRaw.shape
-
-  reviewsRaw['combine'] = reviewsRaw['title'] + " " + reviewsRaw['review_text']
-
-  #Clean text
-  reviewsRaw['clean'] = hero.clean(reviewsRaw['combine'])
-
-  all_f_found = []
-  all_records = []
+      print("\n PROCESSING DATA")
+      print("-"*150)
 
 
-  def finalScore(score):
-
-    if score >= 0.05 :
-        return "posstive"
-
-    elif score <= - 0.05 :
-        return "negative"
-
-    else :
-        return "neutral"
 
 
-  for index, row in tqdm(reviewsRaw.iterrows()):
-    sentence = row['combine'].lower()
+      reviewsRaw = pd.DataFrame.from_dict(json_input_data)
 
-    tokenized_sentence = nltk.word_tokenize(sentence)
+      print("[Shape] : ",reviewsRaw.shape)
 
-    sid = SentimentIntensityAnalyzer()
+      reviewsRaw = reviewsRaw.dropna()
+      Shape_of_data = reviewsRaw.shape
 
-  
-    f = features
-    f = [item.lower() for item in f]
+      reviewsRaw['combine'] = reviewsRaw['title'] + " " + reviewsRaw['review_text']
 
+      #Clean text
+      reviewsRaw['clean'] = hero.clean(reviewsRaw['combine'])
+
+      all_f_found = []
+      all_records = []
+
+
+      def finalScore(score):
+
+        if score >= 0.05 :
+            return "posstive"
+
+        elif score <= - 0.05 :
+            return "negative"
+
+        else :
+            return "neutral"
+
+
+      for index, row in tqdm(reviewsRaw.iterrows()):
+        sentence = row['combine'].lower()
+
+        tokenized_sentence = nltk.word_tokenize(sentence)
+
+        sid = SentimentIntensityAnalyzer()
+
+
+        f = features
+        f = [item.lower() for item in f]
+
+
+        for i in f:
+
+          if i in sentence:
+
+
+            all_f_found.append(i)
+
+            sentences = [sentence + '.' for sentence in sentence.split('.') if i in sentence]
+
+            score = sid.polarity_scores(sentence)
+
+
+
+
+            current_record = {"found":i,
+                              "sentence":sentence,
+                              "positive":score['pos'],
+                              "negative":score['neg'],
+                              "neutral":score['neu'],
+                              "overall_sentiments":finalScore(score['compound']),
+                              "score":score['compound']*100}
+
+            all_records.append(current_record)
+
+            print(f'\n [Found] :', current_record )
+
+
+      final = pd.DataFrame(all_records)
+      print("[OUTPUTFILE SHAPE] :",final.shape)
+
+
+      return {"Status":"DONE","ALL_JSON":final.to_json(orient="records")}
+
+
+else:
+    return {"Status":"Invalid API Key"}
     
-    for i in f:
-
-      if i in sentence:
-
-
-        all_f_found.append(i)
-
-        sentences = [sentence + '.' for sentence in sentence.split('.') if i in sentence]
-
-        score = sid.polarity_scores(sentence)
-
-
-
-        
-        current_record = {"found":i,
-                          "sentence":sentence,
-                          "positive":score['pos'],
-                          "negative":score['neg'],
-                          "neutral":score['neu'],
-                          "overall_sentiments":finalScore(score['compound']),
-                          "score":score['compound']*100}
-
-        all_records.append(current_record)
-        
-        print(f'\n [Found] :', current_record )
-        
-  
-  final = pd.DataFrame(all_records)
-  print("[OUTPUTFILE SHAPE] :",final.shape)
-
-  
-  return {"Status":"DONE","ALL_JSON":final.to_json(orient="records")}
 
 
 
